@@ -1,0 +1,1 @@
+/home/justin/miniconda3/envs/plantmon/bin/python3 pub.py

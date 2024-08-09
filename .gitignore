@@ -1,0 +1,10 @@
+.DS_Store
+docs/.buildinfo
+docs/.doctrees/
+**__pycache__/
+*.egg-info
+build/*
+
+.vscode
+.lgd-nfy()
+pics/*

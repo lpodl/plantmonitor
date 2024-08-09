@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Plant Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>My Plant Dashboard</h1>
+    </header>
+    <main>
+        <div class="plots">
+            <div class="card temperature">
+                <h2>Temperature</h2>
+                <img src="data:image/png;base64,{{ temperature_plot }}" alt="Temperature Plot">
+            </div>
+            <div class="card humidity">
+                <h2>Humidity</h2>
+                <img src="data:image/png;base64,{{ humidity_plot }}" alt="Humidity Plot">
+            </div>
+        </div>
+        <div class="plant-photo">
+            <h2>Latest Plant Photo</h2>
+            <img src="{{ url_for('plant_photo') }}" alt="Plant Photo">
+        </div>
+    </main>
+</body>
+</html>
