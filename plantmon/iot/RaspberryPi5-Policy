@@ -11,6 +11,7 @@
       "Resource": [
         "arn:aws:iot:eu-central-1:288761737989:topic/sdk/test/java",
         "arn:aws:iot:eu-central-1:288761737989:topic/sdk/test/python",
+        "arn:aws:iot:eu-central-1:288761737989:topic/plantmonitor/data/sensor",
         "arn:aws:iot:eu-central-1:288761737989:topic/sdk/test/js"
       ]
     },
@@ -22,6 +23,7 @@
       "Resource": [
         "arn:aws:iot:eu-central-1:288761737989:topicfilter/sdk/test/java",
         "arn:aws:iot:eu-central-1:288761737989:topicfilter/sdk/test/python",
+        "arn:aws:iot:eu-central-1:288761737989:topicfilter/plantmonitor/data/sensor",
         "arn:aws:iot:eu-central-1:288761737989:topicfilter/sdk/test/js"
       ]
     },

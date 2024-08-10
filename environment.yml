@@ -1,0 +1,30 @@
+name: plantmon2
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - libgpiod
+  - pandas
+  - black
+  - seaborn
+  - flask
+  - pip
+  - pylint
+  - docformatter
+  - pip:
+      - awscrt
+      - binho-host-adapter
+      - emoji
+      - gpiod
+      - halo
+      - lgpio
+      - log-symbols
+      - pyftdi
+      - pyserial
+      - pyusb
+      - rpi-gpio
+      - rpi-lgpio
+      - spinners
+      - sysv-ipc
+      - termcolor
