@@ -5,7 +5,7 @@ from datetime import datetime
 
 # Hardcoded configuration variables
 endpoint = "a1rqeucab7scyn-ats.iot.eu-central-1.amazonaws.com"
-ca_file = "root-CA.crt"
+ca_file = "/home/justin/plantmon/plantmon/iot/root-CA.crt"
 cert_file = "/home/justin/.ssh/RaspberryPi5.cert.pem"
 key_file = "/home/justin/.ssh/RaspberryPi5.private.key"
 client_id = "basicPubSub"
@@ -26,13 +26,17 @@ def on_connection_resumed(connection, return_code, session_present, **kwargs):
     )
 
 
-def publish_sensor_data(mqtt_connection, timestamp, humidity, temperature):
-    msg = {"timestamp": timestamp, "humidity": humidity, "temperature": temperature}
+def publish_sensor_data(mqtt_connection, msg_id, timestamp, humidity, temperature):
+    msg = {
+        "msg_id": msg_id,
+        "msg_time": timestamp,
+        "humidity": humidity,
+        "temperature": temperature,
+    }
     message_json = json.dumps(msg)
     mqtt_connection.publish(
         topic=topic, payload=message_json, qos=mqtt.QoS.AT_LEAST_ONCE
     )
-    print("Published message to topic '{}': {}".format(topic, message_json))
 
 
 def connect_mqtt():

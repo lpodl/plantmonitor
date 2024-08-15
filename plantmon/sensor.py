@@ -7,6 +7,7 @@ from datetime import datetime
 import numpy as np
 from halo import Halo
 import emoji
+import warnings
 
 
 class DHT22:
@@ -77,7 +78,7 @@ def sample_sensor(sensor):
                 print(f"Error reading sensor (attempt {attempt + 1}): {str(e)}")
             time.sleep(1)
     if not temperature:
-        raise Warning("Reading from sensor did not succeed")
+        warnings.warn("Reading from sensor did not succeed", RuntimeWarning)
     return temperature, humidity
 
 
@@ -90,7 +91,7 @@ def remove_outliers(data, m=1.5):
     return [x for x in data if lower_bound <= x <= upper_bound]
 
 
-def read_sensor(interval, sampling_timeout=.5):
+def read_sensor(interval, sampling_timeout=0.5):
     """Reads temperature and humidity data from the DHT22 sensor over a
     specified interval.
 
@@ -171,6 +172,8 @@ if __name__ == "__main__":
         filename = f"./sensor_data/{timestamp}.csv"
         df.to_csv(filename, index=False)
         print(
-            emoji.emojize(f" :file_folder: [{timestamp}] saved dataframe under {filename}")  # noqa: E501
+            emoji.emojize(
+                f" :file_folder: [{timestamp}] saved dataframe under {filename}"
+            )  # noqa: E501
         )
         data.clear()
