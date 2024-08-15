@@ -11,16 +11,18 @@ import random
 
 app = Flask(__name__)
 
+
 def generate_dummy_data(num_records=10):
     dummy_data = []
     for _ in range(num_records):
         record = {
             "Timestamp": datetime.now().isoformat(),
             "Temperature (°C)": round(random.uniform(15.0, 30.0), 2),
-            "Humidity (%)": round(random.uniform(30.0, 70.0), 2)
+            "Humidity (%)": round(random.uniform(30.0, 70.0), 2),
         }
         dummy_data.append(record)
     return pd.DataFrame(dummy_data)
+
 
 def plot(df):
     df["Timestamp"] = pd.to_datetime(df["Timestamp"])
@@ -63,13 +65,24 @@ def plot(df):
     plt.close()
     return temp_plot, humidity_plot
 
+
 def get_photos(num_photos):
     directory = "/home/justin/plantmon/plantmon/pics/"
     photo_files = [
         os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(".jpg")
     ]
     latest_photos = sorted(photo_files, key=os.path.getmtime, reverse=True)[:num_photos]
-    return [{"filepath": photo, "filename": os.path.basename(photo), "date": datetime.fromtimestamp(os.path.getmtime(photo)).strftime('%Y-%m-%d %H:%M:%S')} for photo in latest_photos]
+    return [
+        {
+            "filepath": photo,
+            "filename": os.path.basename(photo),
+            "date": datetime.fromtimestamp(os.path.getmtime(photo)).strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
+        }
+        for photo in latest_photos
+    ]
+
 
 @app.route("/")
 def index():
@@ -85,13 +98,14 @@ def index():
         "index.html",
         temperature_plot=temperature_plot_data,
         humidity_plot=humidity_plot_data,
-        recent_photos=recent_photos
+        recent_photos=recent_photos,
     )
+
 
 @app.route("/plant_photo/<path:filename>")
 def serve_photo(filename):
     directory = "/home/justin/plantmon/plantmon/pics/"
-    return send_file(os.path.join(directory, filename), mimetype='image/jpeg')
+    return send_file(os.path.join(directory, filename), mimetype="image/jpeg")
 
 
 if __name__ == "__main__":

@@ -52,7 +52,7 @@ class DHT22:
 
         binary_string = "".join("1" if bit else "0" for bit in data)
         bytes_data = [
-            int(binary_string[i: i + 8], 2) for i in range(0, len(binary_string), 8)
+            int(binary_string[i : i + 8], 2) for i in range(0, len(binary_string), 8)
         ]
 
         if len(bytes_data) != 5:
