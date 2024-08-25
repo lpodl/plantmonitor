@@ -52,7 +52,7 @@ class DHT22:
 
         binary_string = "".join("1" if bit else "0" for bit in data)
         bytes_data = [
-            int(binary_string[i : i + 8], 2) for i in range(0, len(binary_string), 8)
+            int(binary_string[i: i + 8], 2) for i in range(0, len(binary_string), 8)
         ]
 
         if len(bytes_data) != 5:
@@ -124,7 +124,7 @@ def read_sensor(interval, sampling_timeout=0.5):
             humidity_readings.append(humidity)
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             spinner.text = emoji.emojize(
-                f"[{timestamp}] reading :thermometer: {temperature}°C :sweat_droplets: {humidity}%"  # noqa: E501
+                f"\r[{timestamp}] reading :thermometer: {temperature}°C :sweat_droplets: {humidity}%"  # noqa: E501
             )
         time.sleep(sampling_timeout)
 
@@ -147,7 +147,7 @@ def read_sensor(interval, sampling_timeout=0.5):
 
 MAX_RETRIES = 10
 INTERVAL_LENGTH = 2 * 60  # reading interval (s) over which we sum
-TIMEFRAME = 1 * 30 * 60  # ~ batch length (s) for one dataframe
+TIMEFRAME = 10 * 60  # ~ batch length (s) for one dataframe
 
 data = []
 if __name__ == "__main__":
