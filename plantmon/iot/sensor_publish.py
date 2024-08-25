@@ -21,7 +21,7 @@ while True:
     try:
         temperature, humidity, timestamp = read_sensor(INTERVAL_LENGTH)
         publish_sensor_data(
-            mqtt_connection, get_msg_id(timestamp), timestamp, humidity, temperature
+            mqtt_connection, "0", timestamp, humidity, temperature
         )
         print(
             emoji.emojize(
