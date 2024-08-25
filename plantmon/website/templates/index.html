@@ -1,37 +1,35 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <div class="dashboard-wrapper">
-  <header>
-    <h1>Plant Monitoring Dashboard</h1>
-    <div class="btn-group">
-      <button class="btn btn-outline-secondary btn-l">Last 3 days</button>
-      <button class="btn btn-outline-secondary btn-l">Last 7 days</button>
-      <button class="btn btn-outline-secondary btn-l">Last 14 days</button>
-    </div>
-  </header>
-  <main>
-    <div class="charts-container">
-      <div class="chart-card">
-        <h2>Temperature</h2>
-        <img src="data:image/png;base64,{{ temperature_plot }}" alt="Temperature Plot">
+   <header>
+      <h1>Plant Monitoring Dashboard</h1>
+      <div class="btn-group">
+         <button class="btn btn-outline-secondary btn-l">Last 3 days</button>
+         <button class="btn btn-outline-secondary btn-l">Last 7 days</button>
+         <button class="btn btn-outline-secondary btn-l">Last 14 days</button>
       </div>
-      <div class="chart-card">
-        <h2>Humidity</h2>
-        <img src="data:image/png;base64,{{ humidity_plot }}" alt="Humidity Plot">
+   </header>
+   <main>
+      <div class="charts-container">
+         <div class="chart-card">
+            <h2>Temperature</h2>
+            <img src="data:image/png;base64,{{ temperature_plot }}" alt="Temperature Plot">
+         </div>
+         <div class="chart-card">
+            <h2>Humidity</h2>
+            <img src="data:image/png;base64,{{ humidity_plot }}" alt="Humidity Plot">
+         </div>
       </div>
-    </div>
-    <div class="photos-container">
-      <h2>Recent Photos</h2>
-      <div class="photos-grid">
-        {% for photo in recent_photos %}
-        <div class="photo-card">
-          <img src="{{ url_for('serve_photo', filename=photo.filename) }}" alt="Plant Photo">
-          <div class="photo-date">{{ photo.date }}</div>
-        </div>
-        {% endfor %}
+      <div class="photos-container">
+         <h2>Recent Photos</h2>
+         <div class="photos-grid">
+            {% for photo in recent_photos %}
+            <div class="photo-card">
+               <img src="{{ photo.url }}" alt="Plant Photo">
+            </div>
+            {% endfor %}
+         </div>
       </div>
-    </div>
-  </main>
+   </main>
 </div>
 {% endblock %}
