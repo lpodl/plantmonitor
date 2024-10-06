@@ -52,7 +52,7 @@ class DHT22:
 
         binary_string = "".join("1" if bit else "0" for bit in data)
         bytes_data = [
-            int(binary_string[i: i + 8], 2) for i in range(0, len(binary_string), 8)
+            int(binary_string[i : i + 8], 2) for i in range(0, len(binary_string), 8)
         ]
 
         if len(bytes_data) != 5:
@@ -91,7 +91,7 @@ def remove_outliers(data, m=1.5):
     return [x for x in data if lower_bound <= x <= upper_bound]
 
 
-def read_sensor(interval, sampling_timeout=0.5):
+def read_sensor(interval, sampling_timeout=0.5, spinner_flag=True):
     """Reads temperature and humidity data from the DHT22 sensor over a
     specified interval.
 
@@ -100,6 +100,7 @@ def read_sensor(interval, sampling_timeout=0.5):
             to read the sensor data.
         sampling_timeout (float, optional): timeout (in seconds)
             between samplings. Defaults to 0.5 seconds.
+        spinner_flag(bool): flag for cool tty output
 
     Returns:
         tuple: A tuple containing the average temperature (float),
@@ -123,9 +124,10 @@ def read_sensor(interval, sampling_timeout=0.5):
             temperature_readings.append(temperature)
             humidity_readings.append(humidity)
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            spinner.text = emoji.emojize(
-                f"\r[{timestamp}] reading :thermometer: {temperature}°C :sweat_droplets: {humidity}%"  # noqa: E501
-            )
+            if spinner_flag:
+                spinner.text = emoji.emojize(
+                    f"\r[{timestamp}] reading :thermometer: {temperature}°C :sweat_droplets: {humidity}%"  # noqa: E501
+                )
         time.sleep(sampling_timeout)
 
     spinner.stop()

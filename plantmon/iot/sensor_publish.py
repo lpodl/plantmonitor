@@ -17,20 +17,25 @@ def get_msg_id(timestamp):
 
 
 mqtt_connection = connect_mqtt()
-while True:
-    try:
-        temperature, humidity, timestamp = read_sensor(INTERVAL_LENGTH)
-        publish_sensor_data(
-            mqtt_connection, "0", timestamp, humidity, temperature
+try:
+    while True:
+        temperature, humidity, timestamp = read_sensor(
+            INTERVAL_LENGTH, spinner_flag=False
         )
+        publish_sensor_data(mqtt_connection, "0", timestamp, humidity, temperature)
         print(
             emoji.emojize(
                 f" :incoming_envelope: msg sent [{timestamp}] | Temperature (°C) {temperature:.2f} | Humidity (%) {humidity:.2f}"  # noqa: E501
             )
         )
-    except KeyboardInterrupt:
-        print("Disconnecting...")
+except KeyboardInterrupt:
+    print("Disconnecting...")
+    disconnect_future = mqtt_connection.disconnect()
+    disconnect_future.result()
+    print("Disconnected!")
+    raise KeyboardInterrupt
+finally:
+    if mqtt_connection:
         disconnect_future = mqtt_connection.disconnect()
         disconnect_future.result()
         print("Disconnected!")
-        raise KeyboardInterrupt
