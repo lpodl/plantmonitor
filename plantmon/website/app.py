@@ -43,7 +43,7 @@ def plot(df):
     ax.xaxis.set_major_locator(mdates.HourLocator(interval=12))
     ax.grid(True, linestyle="--", alpha=0.7)
     plt.tight_layout()
-    plt.savefig(temp_plot, format="png")
+    plt.savefig(temp_plot, format="png", bbox_inches="tight")
     temp_plot.seek(0)
     plt.close()
 
@@ -58,7 +58,7 @@ def plot(df):
     ax.grid(True, linestyle="--", alpha=0.7)
     plt.tight_layout()
     humidity_plot = BytesIO()
-    plt.savefig(humidity_plot, format="png")
+    plt.savefig(humidity_plot, format="png", bbox_inches="tight")
     humidity_plot.seek(0)
     plt.close()
     return temp_plot, humidity_plot
