@@ -75,9 +75,6 @@ main {
     color: #333333;
 }
 
-.btn-group {
-    display: flex;
-}
 
 .btn-group .btn {
     border-radius: 8px;
@@ -93,6 +90,14 @@ main {
 
 h1, h2 {
     color: #333333;
+}
+
+.btn-group {
+    display: none; /* Hide buttons on both mobile and desktop */
+}
+
+.bottom-nav {
+    display: none;
 }
 
 /* Mobile Styles */
