@@ -10,11 +10,43 @@ import boto3
 
 app = Flask(__name__)
 
-# Configure your S3 and DynamoDB details
+# Configure AWS details
 S3_BUCKET_NAME = "plant-pics"
 AWS_REGION = "eu-central-1"
-
 s3_client = boto3.client("s3", region_name=AWS_REGION)
+
+
+
+projects = [
+    {
+        "id": "project1",
+        "name": "Project 1",
+        "description": "A brief description of Project 1 and its key features.",
+        "image": "/static/images/placeholder.svg",
+        "link": "#"
+    },
+    {
+        "id": "project2",
+        "name": "Project 2",
+        "description": "An overview of Project 2 and what makes it unique.",
+        "image": "/static/images/placeholder.svg",
+        "link": "#"
+    },
+    {
+        "id": "project3",
+        "name": "Project 3",
+        "description": "Highlighting the main aspects and achievements of Project 3.",
+        "image": "/static/images/placeholder.svg",
+        "link": "#"
+    },
+    {
+        "id": "project4",
+        "name": "Project 4",
+        "description": "Exploring the innovative solutions implemented in Project 4.",
+        "image": "/static/images/placeholder.svg",
+        "link": "#"
+    }
+]
 
 
 def get_sensor_data():
@@ -90,9 +122,12 @@ def get_photos(num_photos):
         print(f"Error retrieving photos from S3: {e}")
         return []
 
+@app.route('/')
+def home():
+    return render_template('home.html', projects=projects[2:])
 
-@app.route("/")
-def index():
+@app.route('/plantmonitor-dynamic')
+def plant_monitor():
     df = get_sensor_data()
     temp_plot, humidity_plot = plot(df)
 
@@ -102,12 +137,11 @@ def index():
     recent_photos = get_photos(3)
 
     return render_template(
-        "index.html",
+        'plantmon/dashboard.html',
         temperature_plot=temperature_plot_data,
         humidity_plot=humidity_plot_data,
         recent_photos=recent_photos,
     )
-
 
 if __name__ == "__main__":
     app.run(debug=True)

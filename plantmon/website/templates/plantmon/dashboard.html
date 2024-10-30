@@ -1,4 +1,12 @@
 {% extends 'base.html' %}
+{% block title %} Plantmonitor{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/plantmon.css') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='herb.ico') }}">
+{% endblock %}
+
 {% block content %}
 <div class="dashboard-wrapper">
     <header>
