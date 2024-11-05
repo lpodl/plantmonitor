@@ -1,1 +1,0 @@
-fswebcam --banner-colour "#40916C" --line-colour "#D8F3DC" -r 1920x1080 --no-shadow --jpeg 100  /home/justin/plantmon/plantmon/pics/$(date +"%Y-%m-%d_%H%M").jpg

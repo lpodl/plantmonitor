@@ -1,25 +1,32 @@
 """
-captures photos and uploads them to S3 bucket
+uploads captured photos to S3 bucket
 """
 
 import boto3
-from datetime import datetime
+from botocore.exceptions import ClientError
+import logging
+import os
 
-s3 = boto3.client("s3")
-bucket_name = "plant-monitoring-images-yourusername"
 
-
-def upload_image_to_s3(image_data, image_name):
+def upload_file(file_name, bucket, object_name):
+    """Upload a file to an S3 bucket"""
+    s3_client = boto3.client("s3")
     try:
-        s3.put_object(Bucket=bucket_name, Key=image_name, Body=image_data)
-        print(f"Uploaded {image_name} to S3 successfully")
-    except Exception as e:
-        print(f"Error uploading to S3: {str(e)}")
+        s3_client.upload_file(file_name, bucket, object_name)
+        print(f"File {file_name} was uploaded to {bucket}/{object_name}")
+    except ClientError as e:
+        print("File upload failed")
+        logging.error(e)
+        raise e
 
 
-# In your image capture function:
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-image_name = f"plant_image_{timestamp}.jpg"
-# Capture image (replace with your actual image capture code)
-image_data = capture_image()
-upload_image_to_s3(image_data, image_name)
+PIC_PATH = "/home/justin/plantmon/plantmon/pics/Oct24"
+BUCKET_NAME = "plant-pics"
+
+
+if __name__ == "__main__":
+    files = os.listdir(PIC_PATH)
+    full_paths = [os.path.join(PIC_PATH, file) for file in files]
+    latest_pic = max(full_paths, key=os.path.getmtime)
+    object_name = os.path.splitext(os.path.basename(latest_pic))[0]
+    upload_file(latest_pic, BUCKET_NAME, object_name)
