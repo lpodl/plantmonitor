@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %} Plantmonitor{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/plantmon.css') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='herb.ico') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <header>
+        <h1>Plant Monitoring Dashboard</h1>
+    </header>
+
+    <main>
+        <div class="charts-container active" id="plotsSection">
+            <div class="chart-card">
+                <h2>Temperature</h2>
+                <img src="data:image/png;base64,{{ temperature_plot }}" alt="Temperature Plot">
+            </div>
+            <div class="chart-card">
+                <h2>Humidity</h2>
+                <img src="data:image/png;base64,{{ humidity_plot }}" alt="Humidity Plot">
+            </div>
+        </div>
+
+        <div class="photos-container" id="photosSection">
+            <div class="photos-grid">
+                {% for photo in recent_photos %}
+                <div class="photo-card">
+                    <img src="{{ photo.url }}" alt="Plant Photo">
+                    <div class="photo-date">{{ photo.date }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Navigation -->
+    <div class="bottom-nav">
+        <button class="nav-button active" onclick="switchTab('plots')">Plots</button>
+        <button class="nav-button" onclick="switchTab('photos')">Photos</button>
+    </div>
+</div>
+
+<script>
+function switchTab(tab) {
+    // Remove active class from all sections and buttons
+    document.querySelectorAll('.charts-container, .photos-container').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-button').forEach(el => el.classList.remove('active'));
+
+    // Add active class to selected section and button
+    if (tab === 'plots') {
+        document.getElementById('plotsSection').classList.add('active');
+        document.querySelector('button[onclick="switchTab(\'plots\')"]').classList.add('active');
+    } else {
+        document.getElementById('photosSection').classList.add('active');
+        document.querySelector('button[onclick="switchTab(\'photos\')"]').classList.add('active');
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,215 @@
+/* Base styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #f7fafc, #ffffff);
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Hero Section */
+.hero-section {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2d3748; /* Dark gray for the title */
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: #4a5568; /* Medium gray for the subtitle */
+    margin-bottom: 30px;
+}
+
+/* Button styles */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-primary {
+    background-color: #e2e8f0; /* Light muted gray for primary button */
+    color: #2d3748; /* Dark gray for button text */
+}
+
+.btn.outline:hover {
+    background-color: #00ff0d; /* Slightly darker gray for hover */
+}
+
+.btn-outline {
+    border: 2px solid #e2e8f0; /* Light muted gray for outline */
+    color: #2d3748; /* Dark gray text */
+    background-color: transparent;
+}
+
+.btn-outline:hover {
+    background-color: rgba(226, 232, 240, 0.2); /* Lighten background on hover */
+    color: #4396f4; /* Change color on hover */
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Links styles */
+a {
+    color: #2d3748; /* Dark gray links */
+    text-decoration: none; /* No underline by default */
+    transition: color 0.3s ease, text-decoration 0.3s ease; /* Smooth transition */
+}
+
+/* Projects Section */
+.projects-section {
+    margin-top: 50px;
+    padding: 20px;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.project-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.15);
+    border-color: rgba(0, 0, 0, 0);
+}
+
+
+.project-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 20px 24px 8px;
+    letter-spacing: -0.01em;
+}
+
+.project-card img {
+    width: 100%;
+    height: auto; 
+    margin: auto; 
+    border-radius: 12px 12px 0 0;
+    padding: 10px 0 10px 0; 
+}
+
+.project-card p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #64748b;
+    margin: 0 24px 20px;
+}
+
+.project-card .btn {
+    margin: 0 24px 24px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.project-card .btn-primary {
+    background-color: #f8f9fa;
+    color: #1a202c;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.project-card .btn-primary:hover {
+    background-color: #1a202c;
+    color: white;
+    border-color: #1a202c;
+}
+
+.project-card .btn i {
+    font-size: 0.85rem;
+    transition: transform 0.2s ease;
+}
+
+.project-card .btn:hover i {
+    transform: translateX(4px);
+}
+
+/* Category-specific styling */
+.plantmon h3 {
+    color: #059669;
+}
+
+.plantmon img {
+    width: 40%;
+    height: auto; 
+    margin: 0 auto; 
+    border-radius: 12px 12px 0 0;
+    padding: 10px 0 10px 0; 
+}
+
+
+.quantum h3 {
+    color: #3473a3;
+}
+
+.js h3 {
+    color: #dac31b;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 0 16px;
+    }
+
+    .project-card img {
+        height: 200px;
+    }
+
+    .project-card h3 {
+        font-size: 1.2rem;
+        margin: 16px 20px 8px;
+    }
+
+    .project-card p {
+        margin: 0 20px 16px;
+    }
+
+    .project-card .btn {
+        margin: 0 20px 20px;
+    }
+}

@@ -10,11 +10,43 @@ import boto3
 
 app = Flask(__name__)
 
-# Configure your S3 and DynamoDB details
+# Configure AWS details
 S3_BUCKET_NAME = "plant-pics"
 AWS_REGION = "eu-central-1"
-
 s3_client = boto3.client("s3", region_name=AWS_REGION)
+
+
+
+projects = [
+    {
+        "id": "project1",
+        "name": "Project 1",
+        "description": "A brief description of Project 1 and its key features.",
+        "image": "/static/images/placeholder.svg",
+        "link": "#"
+    },
+    {
+        "id": "project2",
+        "name": "Project 2",
+        "description": "An overview of Project 2 and what makes it unique.",
+        "image": "/static/images/placeholder.svg",
+        "link": "#"
+    },
+    {
+        "id": "project3",
+        "name": "Project 3",
+        "description": "Highlighting the main aspects and achievements of Project 3.",
+        "image": "/static/images/placeholder.svg",
+        "link": "#"
+    },
+    {
+        "id": "project4",
+        "name": "Project 4",
+        "description": "Exploring the innovative solutions implemented in Project 4.",
+        "image": "/static/images/placeholder.svg",
+        "link": "#"
+    }
+]
 
 
 def get_sensor_data():
@@ -43,7 +75,7 @@ def plot(df):
     ax.xaxis.set_major_locator(mdates.HourLocator(interval=12))
     ax.grid(True, linestyle="--", alpha=0.7)
     plt.tight_layout()
-    plt.savefig(temp_plot, format="png")
+    plt.savefig(temp_plot, format="png", bbox_inches="tight")
     temp_plot.seek(0)
     plt.close()
 
@@ -58,41 +90,56 @@ def plot(df):
     ax.grid(True, linestyle="--", alpha=0.7)
     plt.tight_layout()
     humidity_plot = BytesIO()
-    plt.savefig(humidity_plot, format="png")
+    plt.savefig(humidity_plot, format="png", bbox_inches="tight")
     humidity_plot.seek(0)
     plt.close()
     return temp_plot, humidity_plot
 
 
+def get_date_prefixes():
+    today = datetime.now()
+    yesterday = today - timedelta(days=1)
+    today_prefix = today.strftime('%Y-%m-%d')
+    yesterday_prefix = yesterday.strftime('%Y-%m-%d')
+    return today_prefix, yesterday_prefix
+
+
 def get_photos(num_photos):
-    try:
-        response = s3_client.list_objects_v2(Bucket=S3_BUCKET_NAME, MaxKeys=num_photos)
+    s3_client = boto3.client("s3", region_name=AWS_REGION)
+    # only query recent pics, then sort by time
+    today_prefix, yesterday_prefix = get_date_prefixes()
+    photos = []
+    for prefix in [today_prefix, yesterday_prefix]:
+        try:
+            response = s3_client.list_objects_v2(Bucket=S3_BUCKET_NAME, Prefix=prefix)
+            for obj in response.get("Contents", []):
+                photo = {
+                    "key": obj["Key"],
+                    "filename": obj["Key"].split("/")[-1],
+                    "date": obj["LastModified"].strftime("%Y-%m-%d %H:%M:%S"),
+                    "url": s3_client.generate_presigned_url(
+                        "get_object",
+                        Params={"Bucket": S3_BUCKET_NAME, "Key": obj["Key"]},
+                        ExpiresIn=3600,
+                    ),
+                }
+                photos.append(photo)
+                
+            if len(photos) >= num_photos:
+                break
+        except Exception as e:
+            print(f"Error retrieving photos from S3 for prefix {prefix}: {e}")
+    
+    # Sort the photos by date, most recent first
+    photos.sort(key=lambda x: x["date"], reverse=True)
+    return photos[:num_photos]
 
-        photos = []
-        for obj in response.get("Contents", []):
-            photo = {
-                "key": obj["Key"],
-                "filename": obj["Key"].split("/")[-1],
-                "date": obj["LastModified"].strftime("%Y-%m-%d %H:%M:%S"),
-                "url": s3_client.generate_presigned_url(
-                    "get_object",
-                    Params={"Bucket": S3_BUCKET_NAME, "Key": obj["Key"]},
-                    ExpiresIn=3600,
-                ),
-            }
-            photos.append(photo)
+@app.route('/')
+def home():
+    return render_template('home.html', projects=projects[2:])
 
-        # Sort the photos by date, most recent first
-        photos.sort(key=lambda x: x["date"], reverse=True)
-
-        return photos[:num_photos]
-    except Exception as e:
-        print(f"Error retrieving photos from S3: {e}")
-        return []
-
-
-@app.route("/")
-def index():
+@app.route('/plantmonitor-dynamic')
+def plant_monitor():
     df = get_sensor_data()
     temp_plot, humidity_plot = plot(df)
 
@@ -102,12 +149,11 @@ def index():
     recent_photos = get_photos(3)
 
     return render_template(
-        "index.html",
+        'plantmon/dashboard.html',
         temperature_plot=temperature_plot_data,
         humidity_plot=humidity_plot_data,
         recent_photos=recent_photos,
     )
-
 
 if __name__ == "__main__":
     app.run(debug=True)

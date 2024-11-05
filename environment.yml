@@ -3,15 +3,16 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python
+  - black
+  - boto3
+  - docformatter
+  - flask
+  - gunicorn
   - libgpiod
   - pandas
-  - black
-  - seaborn
-  - flask
-  - pip
   - pylint
-  - docformatter
+  - python
+  - seaborn
   - pip:
       - awscrt
       - binho-host-adapter

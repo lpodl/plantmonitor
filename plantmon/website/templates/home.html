@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %} Justin Pauckert{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='laptop.ico') }}">
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient">
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="title">Justin Pauckert</h1>
+            <p class="subtitle"> Quantum Engineer | Software Developer</p>
+            
+            <!-- Social/Download Buttons -->
+            <div class="button-group">
+                <a href="/cv.pdf" class="btn btn-outline">
+                    Download CV
+                    <i class="fa fa-download icon"></i>
+                </a>
+                <a href="https://github.com/lpodl" class="btn btn-outline">
+                    GitHub
+                    <i class="fab fa-github icon"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/justin-pauckert/" class="btn btn-outline">
+                    LinkedIn
+                    <i class="fab fa-linkedin icon"></i>
+                </a>
+            </div>
+        </section>
+
+        <section class="projects-section">
+            <div class="container">
+                <h2 class="mb-4">Projects</h2>
+                <div class="projects-grid">
+                    <div class="project-card plantmon">
+                        <h3>Plantmonitor - Dynamic</h3>
+                        <p>Website for monitoring plant health using AWS, Flask and nginx. </p>
+                        <img src="{{ url_for('static', filename='img/plantmon-dynamic.png') }}" alt="Preview of PLantmonitor Dynamic">
+                        <a href="#" class="btn btn-primary">View Project <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    
+                    <div class="project-card plantmon">
+                        <h3>Plantmonitor - Static</h3>
+                        <p>An overview of Project 2 and what makes it unique.</p>
+                        <img src="{{ url_for('static', filename='img/placeholder.jpg') }}" alt="Preview of Project 2">
+                        <a href="#" class="btn btn-primary">View Project <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    
+                    <div class="project-card quantum">
+                        <h3>AutoQUBO</h3>
+                        <p>Translating problems for quantum computers using Python.</p>
+                        <img src="{{ url_for('static', filename='img/chimera-topology.png') }}" alt="Preview of Project 3">
+                        <a href="#" class="btn btn-primary">View Project <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    
+                    <div class="project-card js">
+                        <h3>Webcrawler</h3>
+                        <p> A webcrawler to check for dead links written in JavaScript. </p>
+                        <img src="{{ url_for('static', filename='img/webcrawler.png') }}" alt="Preview of Project 4">
+                        <a href="#" class="btn btn-primary">View Project <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %}
+
