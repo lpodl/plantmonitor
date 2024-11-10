@@ -29,8 +29,6 @@ def test_s3_connection():
         return False
 
 
-
-
 def get_photos2(num_photos):
     s3_client = boto3.client("s3", region_name=AWS_REGION)
     try:
@@ -53,25 +51,28 @@ def get_photos2(num_photos):
         print([x["filename"] for x in photos])
         photos.sort(key=lambda x: x["date"], reverse=True)
         print("sorted:")
-        
+
         return photos[:num_photos]
     except Exception as e:
         print(f"Error retrieving photos from S3: {e}")
         return []
 
+
 from datetime import datetime, timedelta
+
 
 def get_date_prefixes():
     today = datetime.now()
     yesterday = today - timedelta(days=1)
-    today_prefix = today.strftime('%Y-%m-%d')
-    yesterday_prefix = yesterday.strftime('%Y-%m-%d')
+    today_prefix = today.strftime("%Y-%m-%d")
+    yesterday_prefix = yesterday.strftime("%Y-%m-%d")
     return today_prefix, yesterday_prefix
+
 
 def get_photos(num_photos):
     s3_client = boto3.client("s3", region_name=AWS_REGION)
     today_prefix, yesterday_prefix = get_date_prefixes()
-    
+
     photos = []
     for prefix in [today_prefix, yesterday_prefix]:
         try:
@@ -88,16 +89,17 @@ def get_photos(num_photos):
                     ),
                 }
                 photos.append(photo)
-                
+
             if len(photos) >= num_photos:
                 break
         except Exception as e:
             print(f"Error retrieving photos from S3 for prefix {prefix}: {e}")
-    
+
     # Sort the photos by date, most recent first
     photos.sort(key=lambda x: x["date"], reverse=True)
     print([x["filename"] for x in photos[:num_photos]])
     return photos[:num_photos]
+
 
 if __name__ == "__main__":
     test_s3_connection()
