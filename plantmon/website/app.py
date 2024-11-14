@@ -20,13 +20,13 @@ s3_client = boto3.client("s3", region_name=AWS_REGION)
 
 projects = [
     {
-        "id": "plantmon-dynamic",
+        "id": "plantmonitor-dynamic",
         "name": "Plantmonitor - Dynamic",
         "description": "Website for monitoring plant health using AWS, Flask and nginx.",
         "image": "/static/img/plantmon-dynamic.png",
         "github_url": "https://github.com/yourusername/plantmon-dynamic",
         "live_url": "/plantmonitor-dynamic",
-        "details_url": "/projects/plantmon-dynamic",
+        "details_url": "/plantmonitor-dynamic",
         "category": "plantmon",
     },
     {
@@ -66,21 +66,12 @@ def home():
     return render_template("home.html", projects=projects)
 
 
-@app.route("/cv")
+@app.route("/cv.pdf")
 def download_cv():
     try:
         return send_file("static/cv_pauckert.pdf", as_attachment=True)
     except FileNotFoundError:
         return "CV file not found", 404
-
-
-# /projects
-@app.route("/projects/<project_id>")
-def project_details(project_id):
-    project = next((p for p in projects if p["id"] == project_id), None)
-    if project is None:
-        return "Project not found", 404
-    return render_template("projects/details.html", project=project)
 
 
 # /plantmon

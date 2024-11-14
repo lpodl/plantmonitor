@@ -16,6 +16,7 @@ dependencies:
   - pip:
       - awscrt
       - emoji
+      - Frozen-Flask
       - halo
       - log-symbols
       - spinners
