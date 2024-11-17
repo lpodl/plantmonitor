@@ -1,10 +1,6 @@
 pipeline {
     agent any
     
-    environment {
-        CONDA_PATH = "/home/justin/miniconda3"
-    }
-    
     stages {
         stage('Checkout') {
             steps {
@@ -27,10 +23,8 @@ pipeline {
                 script {
                     sh '''
                         ls -a
-                        cd /plantmon/website
-                        source "${CONDA_PATH}/etc/profile.d/conda.sh"
-                        conda activate plantmon
-                        python freeze.py
+                        cd ./plantmon/website
+                        /var/lib/jenkins/miniconda3/condabin/conda run -n plantmon python freeze.py
                     '''
                 }
             }
