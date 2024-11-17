@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ~/plantmonitor/plantmonitor/plantmon/website
+                        cd /home/justin/plantmonitor/plantmonitor/plantmon/website
                         source "${CONDA_PATH}/etc/profile.d/conda.sh"
                         conda activate plantmon
                         python freeze.py
@@ -41,7 +41,7 @@ pipeline {
                 sh '''
                     # Copy files to static repo
                     cp -r build/index.html build/plantmon.css ~/plantmonitor-static/
-                    cd ~/plantmonitor-static
+                    cd /home/justin/plantmonitor-static
                     git add .
                     git commit -m "Update from Jenkins: $(date '+%Y-%m-%d %H:%M')"
                     git push origin main
