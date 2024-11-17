@@ -7,7 +7,7 @@ pipeline {
     
     stages {
         stage('Checkout') {
-            steps steps {
+            steps {
                 script {
                     // Checkout dynamic repo
                     checkout scm
