@@ -7,8 +7,16 @@ pipeline {
     
     stages {
         stage('Checkout') {
-            steps {
-                checkout scm
+            steps steps {
+                script {
+                    // Checkout dynamic repo
+                    checkout scm
+                    
+                    // Clone static repo
+                    sh '''
+                        git clone https://github.com/lpodl/plantmonitor-static.git
+                    '''
+                }
             }
         }
         
@@ -16,7 +24,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd /home/justin/plantmonitor/plantmonitor/plantmon/website
+                        cd plantmonitor/plantmon/website
                         source "${CONDA_PATH}/etc/profile.d/conda.sh"
                         conda activate plantmon
                         python freeze.py
@@ -41,7 +49,7 @@ pipeline {
                 sh '''
                     # Copy files to static repo
                     cp -r build/index.html build/plantmon.css ~/plantmonitor-static/
-                    cd /home/justin/plantmonitor-static
+                    cd  ~/plantmonitor-static/
                     git add .
                     git commit -m "Update from Jenkins: $(date '+%Y-%m-%d %H:%M')"
                     git push origin main
