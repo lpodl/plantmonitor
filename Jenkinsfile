@@ -14,6 +14,8 @@ pipeline {
                     
                     // Clone static repo
                     sh '''
+                        cd ..
+                        rm -rf plantmonitor-static
                         git clone https://github.com/lpodl/plantmonitor-static.git
                     '''
                 }
@@ -24,7 +26,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd plantmonitor/plantmon/website
+                        ls -a
+                        cd /plantmon/website
                         source "${CONDA_PATH}/etc/profile.d/conda.sh"
                         conda activate plantmon
                         python freeze.py
