@@ -1,7 +1,18 @@
 pipeline {
     agent any
-    
+    triggers {
+        cron('H 10-22/4 * * *')
+    }
     stages {
+        stage('Print Trigger Cause') {
+            steps {
+                script {
+                    def causes = currentBuild.getBuildCauses()
+                    echo "Build was triggered by: ${causes}"
+                }
+            }
+        }
+        
         stage('Checkout') {
             steps {
                 script {
@@ -10,8 +21,8 @@ pipeline {
                     
                     // Clone static repo
                     sh '''
-                        cd ..
-                        rm -rf plantmonitor-static
+                        rm -rf ~/plantmonitor-static
+                        cd ~
                         git clone https://github.com/lpodl/plantmonitor-static.git
                     '''
                 }
@@ -22,7 +33,6 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        ls -a
                         cd ./plantmon/website
                         /var/lib/jenkins/miniconda3/condabin/conda run -n plantmon python freeze.py
                     '''
@@ -33,7 +43,8 @@ pipeline {
         stage('Prepare Static Files') {
             steps {
                 sh '''
-                    cd build
+                    # delete everything but html and css for plantmonitor
+                    cd ./plantmon/website/build
                     mv plantmonitor-dynamic index.html
                     find . -type f -not \\( -name 'index.html' -or -name 'plantmon.css' \\) -delete
                     find . -type d -empty -delete
@@ -43,19 +54,34 @@ pipeline {
         
         stage('Deploy to Static Repo') {
             steps {
+                withCredentials([usernamePassword(credentialsId: 'gh-plantmon-accesstoken', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                    sh '''
+                        cd ./plantmon/website/build
+                        # Copy files to static repo
+                        cp -r ./index.html ./static/ ~/plantmonitor-static
+                        cd  ~/plantmonitor-static
+                        git add .
+                        git status
+                        git commit -m "Update from Jenkins: $(date '+%Y-%m-%d %H:%M')"
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/lpodl/plantmonitor-static.git
+                    '''
+                }
+            }
+        }
+
+        stage('Clean Up') {
+            steps {
                 sh '''
-                    # Copy files to static repo
-                    cp -r build/index.html build/plantmon.css ~/plantmonitor-static/
-                    cd  ~/plantmonitor-static/
-                    git add .
-                    git commit -m "Update from Jenkins: $(date '+%Y-%m-%d %H:%M')"
-                    git push origin main
+                    rm -rf ~/plantmonitor-static
                 '''
             }
         }
-    }
-    
+    }                       
+
     post {
+        always {
+            cleanWs()
+        }
         failure {
             echo 'Pipeline failed. Check the logs for details.'
         }
