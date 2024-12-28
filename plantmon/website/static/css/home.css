@@ -178,26 +178,23 @@ a {
     transform: translateX(4px);
 }
 
-/* Category-specific styling */
-.plantmon h3 {
-    color: #059669;
-}
 
 .plantmon img {
-    width: 40%;
+    width: 60%;
+    height: auto; 
+    border-radius: 12px 12px 0 0;
+    padding: 10px 0 10px 0; 
+}
+
+.plantmon-static img {
+    width: 90%;
     height: auto; 
     border-radius: 12px 12px 0 0;
     padding: 10px 0 10px 0; 
 }
 
 
-.quantum h3 {
-    color: #3473a3;
-}
 
-.js h3 {
-    color: #dac31b;
-}
 
 /* Responsive Design */
 @media (max-width: 968px) {
