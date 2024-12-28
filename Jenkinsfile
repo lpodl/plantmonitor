@@ -1,7 +1,7 @@
 pipeline {
     agent any
     triggers {
-        cron('H 10-22/4 * * *')
+        cron('10 * * * *')
     }
     stages {
         stage('Print Trigger Cause') {
@@ -12,7 +12,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Checkout') {
             steps {
                 script {
