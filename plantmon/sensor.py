@@ -52,7 +52,7 @@ class DHT22:
 
         binary_string = "".join("1" if bit else "0" for bit in data)
         bytes_data = [
-            int(binary_string[i : i + 8], 2) for i in range(0, len(binary_string), 8)
+            int(binary_string[i: i + 8], 2) for i in range(0, len(binary_string), 8)
         ]
 
         if len(bytes_data) != 5:
@@ -148,8 +148,8 @@ def read_sensor(interval, sampling_timeout=0.5, spinner_flag=True):
 
 
 MAX_RETRIES = 10
-INTERVAL_LENGTH = 2 * 60  # reading interval (s) over which we sum
-TIMEFRAME = 10 * 60  # ~ batch length (s) for one dataframe
+INTERVAL_LENGTH = 1 * 60  # reading interval (s) over which we sum
+TIMEFRAME = 2 * 60  # ~ batch length (s) for one dataframe
 
 data = []
 if __name__ == "__main__":
@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
         df = pd.DataFrame(data)
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
-        filename = f"./sensor_data/{timestamp}.csv"
+        filename = f"./sensor_data_{timestamp}.csv"
         df.to_csv(filename, index=False)
         print(
             emoji.emojize(
