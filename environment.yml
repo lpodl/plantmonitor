@@ -15,17 +15,9 @@ dependencies:
   - seaborn
   - pip:
       - awscrt
-      - binho-host-adapter
       - emoji
-      - gpiod
+      - Frozen-Flask
       - halo
-      - lgpio
       - log-symbols
-      - pyftdi
-      - pyserial
-      - pyusb
-      - rpi-gpio
-      - rpi-lgpio
       - spinners
-      - sysv-ipc
       - termcolor

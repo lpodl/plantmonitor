@@ -39,36 +39,42 @@ body {
     gap: 10px;
 }
 
+
 .btn {
     display: inline-block;
     padding: 12px 20px;
     border-radius: 5px;
     font-size: 1rem;
     text-decoration: none;
-    transition: background-color 0.3s ease;
+    transition: all 0.2s ease;
     border: 2px solid transparent;
 }
 
 .btn-primary {
-    background-color: #e2e8f0; /* Light muted gray for primary button */
-    color: #2d3748; /* Dark gray for button text */
-}
-
-.btn.outline:hover {
-    background-color: #00ff0d; /* Slightly darker gray for hover */
+    background-color: #e2e8f0;
+    color: #2d3748;
 }
 
 .btn-outline {
-    border: 2px solid #e2e8f0; /* Light muted gray for outline */
-    color: #2d3748; /* Dark gray text */
+    border: 2px solid #e2e8f0;
+    color: #2d3748;
     background-color: transparent;
+    transition: all 0.2s ease;
 }
 
 .btn-outline:hover {
-    background-color: rgba(226, 232, 240, 0.2); /* Lighten background on hover */
-    color: #4396f4; /* Change color on hover */
-    text-decoration: underline; /* Underline on hover */
+    background-color: #4396f4;
+    color: #ffffff;
+    border-color: #4396f4;
+    box-shadow: 0 4px 8px rgba(67, 150, 244, 0.2);
+    text-decoration: none;
 }
+
+.btn-outline .icon {
+    margin-left: 8px;
+    transition: transform 0.2s ease;
+}
+
 
 /* Links styles */
 a {
@@ -132,6 +138,12 @@ a {
     margin: 0 24px 20px;
 }
 
+.project-card .button-group {
+    display: flex;
+    gap: 10px;
+    margin: 24px;
+}
+
 .project-card .btn {
     margin: 0 24px 24px;
     padding: 12px 20px;
@@ -166,27 +178,23 @@ a {
     transform: translateX(4px);
 }
 
-/* Category-specific styling */
-.plantmon h3 {
-    color: #059669;
-}
 
 .plantmon img {
-    width: 40%;
+    width: 60%;
     height: auto; 
-    margin: 0 auto; 
+    border-radius: 12px 12px 0 0;
+    padding: 10px 0 10px 0; 
+}
+
+.plantmon-static img {
+    width: 90%;
+    height: auto; 
     border-radius: 12px 12px 0 0;
     padding: 10px 0 10px 0; 
 }
 
 
-.quantum h3 {
-    color: #3473a3;
-}
 
-.js h3 {
-    color: #dac31b;
-}
 
 /* Responsive Design */
 @media (max-width: 968px) {
@@ -211,5 +219,8 @@ a {
 
     .project-card .btn {
         margin: 0 20px 20px;
+    }
+    .project-card .button-group {
+        flex-direction: column;
     }
 }

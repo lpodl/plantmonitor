@@ -5,8 +5,10 @@ from matplotlib.dates import DateFormatter
 from io import BytesIO
 import base64
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import boto3
+from zoneinfo import ZoneInfo
+
 
 app = Flask(__name__)
 
@@ -16,39 +18,63 @@ AWS_REGION = "eu-central-1"
 s3_client = boto3.client("s3", region_name=AWS_REGION)
 
 
-
 projects = [
     {
-        "id": "project1",
-        "name": "Project 1",
-        "description": "A brief description of Project 1 and its key features.",
-        "image": "/static/images/placeholder.svg",
-        "link": "#"
+        "id": "plantmonitor-dynamic",
+        "name": "Plantmonitor - Dynamic",
+        "description": "Website for monitoring plant health using AWS, Flask and nginx.",
+        "image": "/static/img/plantmon-dynamic.png",
+        "github_url": "https://github.com/yourusername/plantmon-dynamic",
+        "live_url": "/plantmonitor-dynamic",
+        "details_url": "/plantmonitor-dynamic",
+        "category": "plantmon",
     },
     {
-        "id": "project2",
-        "name": "Project 2",
-        "description": "An overview of Project 2 and what makes it unique.",
-        "image": "/static/images/placeholder.svg",
-        "link": "#"
+        "id": "plantmon-static",
+        "name": "Plantmonitor - Static",
+        "description": "Static version of the plant monitoring system.",
+        "image": "/static/img/placeholder.jpg",
+        "github_url": "https://github.com/yourusername/plantmon-static",
+        "live_url": "https://static.plantmonitor.yourdomain.com",  # github.io
+        "details_url": "/projects/plantmon-static",
+        "category": "plantmon",
     },
     {
-        "id": "project3",
-        "name": "Project 3",
-        "description": "Highlighting the main aspects and achievements of Project 3.",
-        "image": "/static/images/placeholder.svg",
-        "link": "#"
+        "id": "autoqubo",
+        "name": "AutoQUBO",
+        "description": "Translating problems for quantum computers using Python.",
+        "image": "/static/img/chimera-topology.png",
+        "github_url": "https://github.com/yourusername/autoqubo",
+        "details_url": "/projects/autoqubo",
+        "category": "quantum",
     },
     {
-        "id": "project4",
-        "name": "Project 4",
-        "description": "Exploring the innovative solutions implemented in Project 4.",
-        "image": "/static/images/placeholder.svg",
-        "link": "#"
-    }
+        "id": "webcrawler",
+        "name": "Webcrawler",
+        "description": "A webcrawler to check for dead links written in JavaScript.",
+        "image": "/static/img/webcrawler.png",
+        "github_url": "https://github.com/yourusername/webcrawler",
+        "details_url": "/projects/webcrawler",
+        "category": "js",
+    },
 ]
 
 
+# /home
+@app.route("/")
+def home():
+    return render_template("home.html", projects=projects)
+
+
+@app.route("/cv.pdf")
+def download_cv():
+    try:
+        return send_file("static/cv_pauckert.pdf", as_attachment=True)
+    except FileNotFoundError:
+        return "CV file not found", 404
+
+
+# /plantmon
 def get_sensor_data():
     dynamodb = boto3.resource("dynamodb", region_name=AWS_REGION)
     table = dynamodb.Table("SensorData")
@@ -99,9 +125,15 @@ def plot(df):
 def get_date_prefixes():
     today = datetime.now()
     yesterday = today - timedelta(days=1)
-    today_prefix = today.strftime('%Y-%m-%d')
-    yesterday_prefix = yesterday.strftime('%Y-%m-%d')
+    today_prefix = today.strftime("%Y-%m-%d")
+    yesterday_prefix = yesterday.strftime("%Y-%m-%d")
     return today_prefix, yesterday_prefix
+
+
+def convert_utc_to_berlin(utc_dt):
+    """needed bc LastModified in DynamoDB is UTC"""
+    berlin_zone = ZoneInfo("Europe/Berlin")
+    return utc_dt.replace(tzinfo=timezone.utc).astimezone(berlin_zone)
 
 
 def get_photos(num_photos):
@@ -113,10 +145,11 @@ def get_photos(num_photos):
         try:
             response = s3_client.list_objects_v2(Bucket=S3_BUCKET_NAME, Prefix=prefix)
             for obj in response.get("Contents", []):
+                berlin_time = convert_utc_to_berlin(obj["LastModified"])
                 photo = {
                     "key": obj["Key"],
                     "filename": obj["Key"].split("/")[-1],
-                    "date": obj["LastModified"].strftime("%Y-%m-%d %H:%M:%S"),
+                    "date": berlin_time.strftime("%Y-%m-%d %H:%M"),
                     "url": s3_client.generate_presigned_url(
                         "get_object",
                         Params={"Bucket": S3_BUCKET_NAME, "Key": obj["Key"]},
@@ -124,21 +157,18 @@ def get_photos(num_photos):
                     ),
                 }
                 photos.append(photo)
-                
+
             if len(photos) >= num_photos:
                 break
         except Exception as e:
             print(f"Error retrieving photos from S3 for prefix {prefix}: {e}")
-    
+
     # Sort the photos by date, most recent first
     photos.sort(key=lambda x: x["date"], reverse=True)
     return photos[:num_photos]
 
-@app.route('/')
-def home():
-    return render_template('home.html', projects=projects[2:])
 
-@app.route('/plantmonitor-dynamic')
+@app.route("/plantmonitor-dynamic")
 def plant_monitor():
     df = get_sensor_data()
     temp_plot, humidity_plot = plot(df)
@@ -149,11 +179,12 @@ def plant_monitor():
     recent_photos = get_photos(3)
 
     return render_template(
-        'plantmon/dashboard.html',
+        "plantmon/dashboard.html",
         temperature_plot=temperature_plot_data,
         humidity_plot=humidity_plot_data,
         recent_photos=recent_photos,
     )
+
 
 if __name__ == "__main__":
     app.run(debug=True)
