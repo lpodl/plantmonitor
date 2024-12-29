@@ -76,14 +76,12 @@ body {
 }
 
 
-/* Links styles */
 a {
     color: #2d3748; /* Dark gray links */
     text-decoration: none; /* No underline by default */
     transition: color 0.3s ease, text-decoration 0.3s ease; /* Smooth transition */
 }
 
-/* Projects Section */
 .projects-section {
     margin-top: 50px;
     padding: 20px;
@@ -198,29 +196,39 @@ a {
 
 /* Responsive Design */
 @media (max-width: 968px) {
+
+    .container {
+        padding: 0;
+    }
+    
+    .projects-section {
+        margin-top: 10px;
+        padding: 0 10px;
+    }
+
     .projects-grid {
         grid-template-columns: 1fr;
         gap: 24px;
-        padding: 0 16px;
+        padding: 0;
     }
 
     .project-card img {
-        height: 200px;
+        width: 100%;
     }
 
     .project-card h3 {
         font-size: 1.2rem;
-        margin: 16px 20px 8px;
     }
 
-    .project-card p {
-        margin: 0 20px 16px;
-    }
-
-    .project-card .btn {
-        margin: 0 20px 20px;
+    .project-card h3,
+    .project-card p,
+    .project-card .btn,
+    .project-card .button-group {
+        margin-left: 16px;
+        margin-right: 16px;
     }
     .project-card .button-group {
         flex-direction: column;
+        align-items: stretch;
     }
 }
