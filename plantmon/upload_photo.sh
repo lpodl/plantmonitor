@@ -1,1 +1,0 @@
-/home/justin/miniconda3/envs/plantmon/bin/python /home/justin/plantmon/plantmon/photo_publish.py
