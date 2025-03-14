@@ -1,11 +1,25 @@
+# Operating System Files
 .DS_Store
-docs/.buildinfo
-docs/.doctrees/
-**__pycache__/
-*.egg-info
-**/build/*
 
+# Editor/IDE Files
 .vscode
 .lgd-nfy()
+
+# Documentation
+docs/.buildinfo
+docs/.doctrees/
+
+# Python
+**/__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.env
+__pycache__/
+
+# Project Specific - Plantmon
 pics/
-aws-iot-device-sdk-python-v2/*
+aws-iot-device-sdk-python-v2/

@@ -67,12 +67,14 @@ Live Demo: 🔗[lpodl.github.io/plantmonitor-static/](https://lpodl.github.io/pl
  ┃ ┣ 📜__init__.py
  ┃ ┣ 📜sensor.py
  ┃ ┣ 📜take_photo.sh
+ ┃ ┣ 📜config.py
  ┣ 📜.gitignore
  ┣ 📜Jenkinsfile
  ┣ 📜LICENSE
  ┣ 📜README.md
  ┣ 📜environment.yml
  ┗ 📜setup.py
+ ┗ 📜.env
 ```
 
 ## Installation
@@ -89,6 +91,15 @@ install plantmon as package
 ```
 cd plantmon && pip install -e . && cd ..
 ```
+
+## Configuration
+
+This project uses one `.env` file for configuration. To set up
+
+1. Copy `.env.example` and rename it to `.env`
+2. Edit with your specific values.
+3. Note that we **don't** load environment variables, just the configuration from `.env`.  
+
 ## Usage
 
 Assuming you have your DHT22 sensor connected to your GPIO pins as described in the manual, run

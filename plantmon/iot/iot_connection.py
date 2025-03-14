@@ -2,14 +2,15 @@ from awscrt import mqtt
 from awsiot import mqtt_connection_builder
 import json
 from datetime import datetime
+from plantmon.config import config
 
-# Hardcoded configuration variables
-endpoint = "a1rqeucab7scyn-ats.iot.eu-central-1.amazonaws.com"
-ca_file = "/home/justin/plantmon/plantmon/iot/root-CA.crt"
-cert_file = "/home/justin/.ssh/RaspberryPi5.cert.pem"
-key_file = "/home/justin/.ssh/RaspberryPi5.private.key"
-client_id = "basicPubSub"
-topic = "plantmonitor/data/sensor"
+# configuration variables
+ENDPOINT = config["AWS_IOT_ENDPOINT"]
+CA_FILE = config["AWS_IOT_CA_FILE"]
+CERT_FILE = config["AWS_IOT_CERT_FILE"]
+KEY_FILE = config["AWS_IOT_KEY_FILE"]
+CLIENT_ID = config["AWS_IOT_CLIENT_ID"]
+TOPIC = config["AWS_IOT_TOPIC"]
 
 
 # Callback when connection is accidentally lost.
@@ -35,25 +36,25 @@ def publish_sensor_data(mqtt_connection, msg_id, timestamp, humidity, temperatur
     }
     message_json = json.dumps(msg)
     mqtt_connection.publish(
-        topic=topic, payload=message_json, qos=mqtt.QoS.AT_LEAST_ONCE
+        topic=TOPIC, payload=message_json, qos=mqtt.QoS.AT_LEAST_ONCE
     )
 
 
 def connect_mqtt():
     # Create a MQTT connection
     mqtt_connection = mqtt_connection_builder.mtls_from_path(
-        endpoint=endpoint,
-        cert_filepath=cert_file,
-        pri_key_filepath=key_file,
-        ca_filepath=ca_file,
+        endpoint=ENDPOINT,
+        cert_filepath=CERT_FILE,
+        pri_key_filepath=KEY_FILE,
+        ca_filepath=CA_FILE,
         on_connection_interrupted=on_connection_interrupted,
         on_connection_resumed=on_connection_resumed,
-        client_id=client_id,
+        client_id=CLIENT_ID,
         clean_session=True,
         keep_alive_secs=30,
     )
 
-    print(f"Connecting to {endpoint} with client ID '{client_id}'...")
+    print(f"Connecting to {ENDPOINT} with client ID '{CLIENT_ID}'...")
     connect_future = mqtt_connection.connect()
 
     # Future.result() waits until a result is available

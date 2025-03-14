@@ -8,6 +8,10 @@ import numpy as np
 from halo import Halo
 import emoji
 import warnings
+from plantmon.config import config
+
+INTERVAL_LENGTH = config["INTERVAL_LENGTH"]
+MAX_RETRIES = config["SENSOR_MAX_RETRIES"]
 
 
 class DHT22:
@@ -74,7 +78,7 @@ def sample_sensor(sensor):
             temperature, humidity = sensor.read()
             break
         except Exception as e:
-            if attempt > 5:
+            if attempt > MAX_RETRIES//2:
                 print(f"Error reading sensor (attempt {attempt + 1}): {str(e)}")
             time.sleep(1)
     if not temperature:
@@ -91,7 +95,7 @@ def remove_outliers(data, m=1.5):
     return [x for x in data if lower_bound <= x <= upper_bound]
 
 
-def read_sensor(interval, sampling_timeout=0.5, spinner_flag=True):
+def read_sensor(interval, sampling_timeout=1, spinner_flag=True):
     """Reads temperature and humidity data from the DHT22 sensor over a
     specified interval.
 
@@ -99,7 +103,7 @@ def read_sensor(interval, sampling_timeout=0.5, spinner_flag=True):
         interval (float): The time interval (in seconds) over which
             to read the sensor data.
         sampling_timeout (float, optional): timeout (in seconds)
-            between samplings. Defaults to 0.5 seconds.
+            between samplings.
         spinner_flag(bool): flag for cool tty output
 
     Returns:
@@ -118,7 +122,8 @@ def read_sensor(interval, sampling_timeout=0.5, spinner_flag=True):
     spinner = Halo(text="Loading", spinner="clock")
 
     while time.time() - start_time < interval:
-        spinner.start()
+        if spinner_flag:
+            spinner.start()
         temperature, humidity = sample_sensor(sensor)
         if temperature is not None and humidity is not None:
             temperature_readings.append(temperature)
@@ -128,9 +133,11 @@ def read_sensor(interval, sampling_timeout=0.5, spinner_flag=True):
                 spinner.text = emoji.emojize(
                     f"\r[{timestamp}] reading :thermometer: {temperature}°C :sweat_droplets: {humidity}%"  # noqa: E501
                 )
+            else:
+                print(emoji.emojize(f"[{timestamp}] reading :thermometer: {temperature}°C :sweat_droplets: {humidity}%"))  # noqa: E501
         time.sleep(sampling_timeout)
-
-    spinner.stop()
+    if spinner_flag:
+        spinner.stop()
     cleaned_temperature = remove_outliers(temperature_readings)
     cleaned_humidity = remove_outliers(humidity_readings)
     avg_temperature = (
@@ -147,12 +154,9 @@ def read_sensor(interval, sampling_timeout=0.5, spinner_flag=True):
     return avg_temperature, avg_humidity, timestamp
 
 
-MAX_RETRIES = 10
-INTERVAL_LENGTH = 1 * 60  # reading interval (s) over which we sum
-TIMEFRAME = 2 * 60  # ~ batch length (s) for one dataframe
-
-data = []
 if __name__ == "__main__":
+    data = []
+    TIMEFRAME = 2 * 60  # ~ batch length (s) for one dataframe
     while True:
         for i in range(TIMEFRAME // INTERVAL_LENGTH):
             avg_temperature, avg_humidity, timestamp = read_sensor(INTERVAL_LENGTH)

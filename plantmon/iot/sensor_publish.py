@@ -7,8 +7,9 @@ from iot_connection import connect_mqtt, publish_sensor_data
 import emoji
 import datetime
 from plantmon.sensor import read_sensor
+from plantmon.config import config
 
-INTERVAL_LENGTH = 2 * 60  # reading interval (s)
+INTERVAL_LENGTH = config["INTERVAL_LENGTH"]
 
 
 def get_msg_id(timestamp):

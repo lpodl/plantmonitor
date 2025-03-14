@@ -1,23 +1,39 @@
-name: plantmon
+name: plantmon2
+
 channels:
   - conda-forge
   - defaults
+
 dependencies:
-  - black
-  - boto3
-  - docformatter
-  - flask
-  - gunicorn
-  - libgpiod
-  - pandas
-  - pylint
-  - python
+  # Core Python
+  - python=3.12
+  - pip
+
+  # AWS Integration
+  - boto3=1.34.*
+  
+  # Plots
+  - pandas=2.*
   - seaborn
+  
+  # Web App
+  - flask=3.*
+  
+  # RaspberryPi Hardware Interaction
+  - libgpiod=2.*
+
+  # dev tools
+  - black
+  - pylint
+  
   - pip:
-      - awscrt
-      - emoji
-      - Frozen-Flask
-      - halo
-      - log-symbols
-      - spinners
-      - termcolor
+    - awscrt==0.21.*
+    - awsiotsdk
+    - emoji
+    - Frozen-Flask==1.*
+    - python-dotenv
+    - halo
+    - log-symbols
+    - rpi-lgpio
+    - spinners
+    - termcolor

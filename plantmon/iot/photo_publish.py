@@ -6,6 +6,10 @@ import boto3
 from botocore.exceptions import ClientError
 import logging
 import os
+from plantmon.config import config
+
+PIC_PATH = config["PIC_PATH"]
+BUCKET_NAME = config["BUCKET_NAME"]
 
 
 def upload_file(file_name, bucket, object_name):
@@ -18,10 +22,6 @@ def upload_file(file_name, bucket, object_name):
         print("File upload failed")
         logging.error(e)
         raise e
-
-
-PIC_PATH = "/home/justin/plantmon/plantmon/pics/Oct24"
-BUCKET_NAME = "plant-pics"
 
 
 if __name__ == "__main__":
