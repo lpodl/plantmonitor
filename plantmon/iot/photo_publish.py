@@ -9,7 +9,7 @@ import os
 from plantmon.config import config
 
 PIC_PATH = config["PIC_PATH"]
-BUCKET_NAME = config["BUCKET_NAME"]
+BUCKET_NAME = config["AWS_PICS_BUCKET"]
 
 
 def upload_file(file_name, bucket, object_name):

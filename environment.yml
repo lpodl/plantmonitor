@@ -1,4 +1,4 @@
-name: plantmon2
+name: plantmon
 
 channels:
   - conda-forge

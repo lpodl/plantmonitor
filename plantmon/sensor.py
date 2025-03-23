@@ -56,7 +56,7 @@ class DHT22:
 
         binary_string = "".join("1" if bit else "0" for bit in data)
         bytes_data = [
-            int(binary_string[i: i + 8], 2) for i in range(0, len(binary_string), 8)
+            int(binary_string[i : i + 8], 2) for i in range(0, len(binary_string), 8)
         ]
 
         if len(bytes_data) != 5:
@@ -78,7 +78,7 @@ def sample_sensor(sensor):
             temperature, humidity = sensor.read()
             break
         except Exception as e:
-            if attempt > MAX_RETRIES//2:
+            if attempt > MAX_RETRIES // 2:
                 print(f"Error reading sensor (attempt {attempt + 1}): {str(e)}")
             time.sleep(1)
     if not temperature:
@@ -134,7 +134,11 @@ def read_sensor(interval, sampling_timeout=1, spinner_flag=True):
                     f"\r[{timestamp}] reading :thermometer: {temperature}°C :sweat_droplets: {humidity}%"  # noqa: E501
                 )
             else:
-                print(emoji.emojize(f"[{timestamp}] reading :thermometer: {temperature}°C :sweat_droplets: {humidity}%"))  # noqa: E501
+                print(
+                    emoji.emojize(
+                        f"[{timestamp}] reading :thermometer: {temperature}°C :sweat_droplets: {humidity}%"  # noqa: E501
+                    )
+                )  # noqa: E501
         time.sleep(sampling_timeout)
     if spinner_flag:
         spinner.stop()

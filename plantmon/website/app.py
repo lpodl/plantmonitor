@@ -1,69 +1,31 @@
-from flask import Flask, render_template, send_file
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from matplotlib.dates import DateFormatter
-from io import BytesIO
 import base64
-import pandas as pd
+import os
+import re
 from datetime import datetime, timedelta, timezone
-import boto3
+from io import BytesIO
 from zoneinfo import ZoneInfo
 
+import boto3
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import pandas as pd
+from flask import Flask, render_template, send_file, url_for
+from matplotlib.dates import DateFormatter
+
+from plantmon.config import config
 
 app = Flask(__name__)
 
 # Configure AWS details
-S3_BUCKET_NAME = "plant-pics"
-AWS_REGION = "eu-central-1"
+S3_BUCKET_NAME = config["AWS_PICS_BUCKET"]
+AWS_REGION = config["AWS_REGION"]
 s3_client = boto3.client("s3", region_name=AWS_REGION)
-
-
-projects = [
-    {
-        "id": "plantmonitor-dynamic",
-        "name": "Plantmonitor - Dynamic",
-        "description": "Website for monitoring plant health using AWS, Flask and nginx.",
-        "image": "/static/img/plantmon-dynamic.png",
-        "github_url": "https://github.com/yourusername/plantmon-dynamic",
-        "live_url": "/plantmonitor-dynamic",
-        "details_url": "/plantmonitor-dynamic",
-        "category": "plantmon",
-    },
-    {
-        "id": "plantmon-static",
-        "name": "Plantmonitor - Static",
-        "description": "Static version of the plant monitoring system.",
-        "image": "/static/img/placeholder.jpg",
-        "github_url": "https://github.com/yourusername/plantmon-static",
-        "live_url": "https://static.plantmonitor.yourdomain.com",  # github.io
-        "details_url": "/projects/plantmon-static",
-        "category": "plantmon",
-    },
-    {
-        "id": "autoqubo",
-        "name": "AutoQUBO",
-        "description": "Translating problems for quantum computers using Python.",
-        "image": "/static/img/chimera-topology.png",
-        "github_url": "https://github.com/yourusername/autoqubo",
-        "details_url": "/projects/autoqubo",
-        "category": "quantum",
-    },
-    {
-        "id": "webcrawler",
-        "name": "Webcrawler",
-        "description": "A webcrawler to check for dead links written in JavaScript.",
-        "image": "/static/img/webcrawler.png",
-        "github_url": "https://github.com/yourusername/webcrawler",
-        "details_url": "/projects/webcrawler",
-        "category": "js",
-    },
-]
 
 
 # /home
 @app.route("/")
 def home():
-    return render_template("home.html", projects=projects)
+    return render_template("home.html")
 
 
 @app.route("/cv.pdf")
@@ -136,7 +98,24 @@ def convert_utc_to_berlin(utc_dt):
     return utc_dt.replace(tzinfo=timezone.utc).astimezone(berlin_zone)
 
 
-def get_photos(num_photos):
+def get_default_images(pattern=r"default_img_\d+\.png"):
+    """
+    Scans the static/img directory for default images matching the pattern.
+    Returns a list of filenames sorted by their number.
+    """
+    img_dir = os.path.join(app.static_folder, "img")
+    default_images = []
+
+    for filename in os.listdir(img_dir):
+        if re.match(pattern, filename):
+            default_images.append(filename)
+
+    # Sort by the number in the filename
+    default_images.sort(key=lambda x: int(re.search(r"(\d+)", x).group()))
+    return default_images
+
+
+def get_photos(num_photos=3):
     s3_client = boto3.client("s3", region_name=AWS_REGION)
     # only query recent pics, then sort by time
     today_prefix, yesterday_prefix = get_date_prefixes()
@@ -162,6 +141,22 @@ def get_photos(num_photos):
                 break
         except Exception as e:
             print(f"Error retrieving photos from S3 for prefix {prefix}: {e}")
+    # default photos if there aren't enough recent ones
+    if len(photos) < num_photos:
+        default_filenames = get_default_images()
+        if default_filenames:
+            # Use available default images (up to num_photos)
+            for i, filename in enumerate(default_filenames[:num_photos]):
+                photos.append(
+                    {
+                        "key": f"default-{i+1}",
+                        "filename": filename,
+                        "date": f"default image {i+1}",
+                        "url": url_for("static", filename=f"img/{filename}"),
+                    }
+                )
+        else:
+            print("No default images found in static/img directory")
 
     # Sort the photos by date, most recent first
     photos.sort(key=lambda x: x["date"], reverse=True)
@@ -176,7 +171,7 @@ def plant_monitor():
     temperature_plot_data = base64.b64encode(temp_plot.getvalue()).decode("utf8")
     humidity_plot_data = base64.b64encode(humidity_plot.getvalue()).decode("utf8")
 
-    recent_photos = get_photos(3)
+    recent_photos = get_photos()
 
     return render_template(
         "plantmon/dashboard.html",
