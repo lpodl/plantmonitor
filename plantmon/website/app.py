@@ -4,6 +4,7 @@ import re
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from zoneinfo import ZoneInfo
+import logging
 
 import boto3
 import matplotlib.dates as mdates
@@ -14,6 +15,7 @@ from matplotlib.dates import DateFormatter
 
 from plantmon.config import config
 
+logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 
 # Configure AWS details
@@ -141,12 +143,13 @@ def get_photos(num_photos=3):
                 break
         except Exception as e:
             print(f"Error retrieving photos from S3 for prefix {prefix}: {e}")
+
     # default photos if there aren't enough recent ones
     if len(photos) < num_photos:
         default_filenames = get_default_images()
         if default_filenames:
             # Use available default images (up to num_photos)
-            for i, filename in enumerate(default_filenames[:num_photos]):
+            for i, filename in enumerate(default_filenames[: num_photos - len(photos)]):
                 photos.append(
                     {
                         "key": f"default-{i+1}",
