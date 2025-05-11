@@ -18,6 +18,7 @@ dependencies:
   
   # Web App
   - flask=3.*
+  - gunicorn
   
   # RaspberryPi Hardware Interaction
   - libgpiod=2.*
